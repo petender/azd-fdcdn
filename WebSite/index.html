@@ -1,0 +1,73 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Sample website for Azure FrontDoor and CDN demo</title>
+
+
+        <link rel="stylesheet" href="css/normalize.min.css">
+        <link rel="stylesheet" href="css/main.css">
+
+        <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    </head>
+    <body>
+        
+        <div class="header-container">
+            <header class="wrapper clearfix">
+                <h1 class="title"><a href="#" class="logo">Sample website for Azure FrontDoor and CDN demo</a></h1>
+                
+            </header>
+        </div>
+
+        <div class="main-container">
+            <div class="main wrapper clearfix">
+                <article>
+                    <header>
+                        <h1>Loading Images from different Azure Services</h1>
+                        <p>This basic demo website allows you to get an idea how the performance of loading images is dependent on the actual Azure Service used. The 3 scenarios are Azure App Services, Azure Storage Account and Azure FrontDoor/CDN. While the first time you load the images, the difference won't be that big, it starts becoming a difference for the Azure CDN option after refreshing the website (Ctrl-F5). It should go from about 1000-3000 ms down to < 100 ms on average. Try to include a few learners, maybe even from different locations in the world, to connect to the website and experiment with the load times.</p>
+                    </header>
+                    <section>
+                        
+                        <a href="#" class="button orange" data-entry-url="/images">Download From App Service</a>
+                        <div class="results">Load time: N/A ms</div>
+                        <ul class="images clearfix">
+                        </ul>
+                        
+                    </section>
+                    <section>
+                        
+                        <a href="#" class="button blue" data-entry-url="https://pdtcdntest1.blob.core.windows.net/images">Download from Azure Blob Storage</a>
+                        <div class="results">Load time: N/A ms</div>
+                        <ul class="images clearfix">
+                        </ul>
+                        
+                    </section>
+                    <section>
+                        
+                        <a href="#" class="button turquoise" data-entry-url="https://newpdtfd-gtdvd9f5cpeth6dy.z01.azurefd.net/images">Download from Azure CDN</a>
+                        <div class="results">Load time: N/A ms</div>
+                        <ul class="images clearfix">
+                        </ul>
+                        
+                    </section>
+                </article>
+
+                
+
+            </div> <!-- #main -->
+        </div> <!-- #main-container -->
+
+        
+
+        
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+
+        <script src="js/main.js"></script>
+
+       
+    </body>
+</html>

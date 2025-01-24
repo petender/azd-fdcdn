@@ -18,8 +18,23 @@ var tags = {
   'azd-env-name': environmentName
 }
 
+var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
+
+
 resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: 'rg-${environmentName}'
   location: location
   tags: tags
+}
+
+//invoke the resources.bicep file
+module fdcdn './fdcdn.bicep' = {
+  scope: rg
+  name: 'resourcesDeployment'
+  params: {
+    location: location
+    tags: tags
+    environmentName: environmentName
+
+  }
 }
