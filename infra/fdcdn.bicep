@@ -372,13 +372,25 @@ module blobUploadIdentity 'br/public:avm/res/managed-identity/user-assigned-iden
         param([string] $StorageAccountName)
   
   
-        Invoke-WebRequest -Uri "https://github.com/rob-foulkrod/BadgeMaker/raw/3b91a9fa5a117bb79807c98bfb767c0d5e0e645e/sampleBadges/badge1.jpg" -OutFile badge1.jpg
-        Invoke-WebRequest -Uri "https://github.com/rob-foulkrod/BadgeMaker/raw/3b91a9fa5a117bb79807c98bfb767c0d5e0e645e/sampleBadges/badge2.jpg" -OutFile badge2.jpg
-  
+        Invoke-WebRequest -Uri "https://github.com/petender/azd-fdcdn/blob/2522659eeb200bfb36d11cdb0f8805a01cc23529/WebSite/images/image-01.jpg" -OutFile image-01.jpg
+        Invoke-WebRequest -Uri "https://github.com/petender/azd-fdcdn/blob/2522659eeb200bfb36d11cdb0f8805a01cc23529/WebSite/images/image-02.jpg" -OutFile image-02.jpg
+        Invoke-WebRequest -Uri "https://github.com/petender/azd-fdcdn/blob/2522659eeb200bfb36d11cdb0f8805a01cc23529/WebSite/images/image-03.jpg" -OutFile image-03.jpg
+        Invoke-WebRequest -Uri "https://github.com/petender/azd-fdcdn/blob/2522659eeb200bfb36d11cdb0f8805a01cc23529/WebSite/images/image-04.jpg" -OutFile image-04.jpg
+        Invoke-WebRequest -Uri "https://github.com/petender/azd-fdcdn/blob/2522659eeb200bfb36d11cdb0f8805a01cc23529/WebSite/images/image-05.jpg" -OutFile image-05.jpg
+        Invoke-WebRequest -Uri "https://github.com/petender/azd-fdcdn/blob/2522659eeb200bfb36d11cdb0f8805a01cc23529/WebSite/images/image-06.jpg" -OutFile image-06.jpg
+
+
+
+
+
         $context = New-AzStorageContext -StorageAccountName $StorageAccountName
   
-        Set-AzStorageBlobContent -Context $context -Container "images" -File badge1.jpg -Blob badge1.jpg -Force
-        Set-AzStorageBlobContent -Context $context -Container "images" -File badge2.jpg -Blob badge2.jpg -Force
+        Set-AzStorageBlobContent -Context $context -Container "images" -File image-01.jpg -Blob image-01.jpg -Force
+        Set-AzStorageBlobContent -Context $context -Container "images" -File image-02.jpg -Blob image-02.jpg -Force
+        Set-AzStorageBlobContent -Context $context -Container "images" -File image-03.jpg -Blob image-03.jpg -Force
+        Set-AzStorageBlobContent -Context $context -Container "images" -File image-04.jpg -Blob image-04.jpg -Force
+        Set-AzStorageBlobContent -Context $context -Container "images" -File image-05.jpg -Blob image-05.jpg -Force
+        Set-AzStorageBlobContent -Context $context -Container "images" -File image-06.jpg -Blob image-06.jpg -Force
         '''
     }
   }
