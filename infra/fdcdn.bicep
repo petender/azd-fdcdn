@@ -10,6 +10,9 @@ param location string = resourceGroup().location
 @description('Abbreviated Names of the Azure Services that can be used as part of naming resource convention')
 var abbrs = loadJsonContent('./abbreviations.json')
 
+@description('Id of the user or app to assign application roles')
+param principalId string = ''
+
 
 @description('Describes plan\'s pricing tier and instance size. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/')
 param sku string = 'S1'
@@ -17,11 +20,12 @@ param sku string = 'S1'
 param copyImages bool = true
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 
+param deployWebSite bool = true
 
-var serverfarmName = '${abbrs.webServerFarms}${namingConvention}'
-var cdnProfileName = '${abbrs.cdnProfiles}${namingConvention}'
-var webSitesAppServiceName = '${abbrs.webSitesAppService}${namingConvention}'
-var cdnProfileEndpointName = '${abbrs.cdnProfilesEndpoints}${namingConvention}'
+var serverfarmName = '${abbrs.webServerFarms}${resourceToken}'
+var cdnProfileName = '${abbrs.cdnProfiles}${resourceToken}'
+var webSitesAppServiceName = '${abbrs.webSitesAppService}${resourceToken}'
+var cdnProfileEndpointName = '${abbrs.cdnProfilesEndpoints}${resourceToken}'
 
 
 
@@ -81,6 +85,11 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.14.3' = {
       {
         principalId: blobUploadIdentity.outputs.principalId
         principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+      }
+      {
+        principalId: principalId //providing necessary permissions to the Azure Sub Admin account used for deploy
+        principalType: 'User'
         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
       }
     ]
@@ -396,3 +405,67 @@ module blobUploadIdentity 'br/public:avm/res/managed-identity/user-assigned-iden
   }
 
 
+ module ScriptManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
+    name: 'ScriptManagedIdentityDeployment'
+    params: {
+      name: '${abbrs.managedIdentityUserAssignedIdentities}Script-${resourceToken}'
+      location: location
+    }
+    
+  }
+
+// add role assignment to the scriptmanagedidentity as contributor to the resoruce group
+
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+  name: guid(resourceGroup().id, ScriptManagedIdentity.name)
+  properties: {
+    principalId: ScriptManagedIdentity.outputs.principalId
+    roleDefinitionId: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+    scope: resourceGroup().id
+  }
+}
+
+
+module WebSitedeploymentScript 'br/public:avm/res/resources/deployment-script:0.5.0' = if (deployWebSite) {
+  name: 'WebSiteScriptDeployment'
+  params: {
+    location: location
+    kind: 'AzurePowerShell'
+    name: 'pwscript-WebSiteScript'
+    azPowerShellVersion: '12.3'
+    managedIdentities: {
+        userAssignedResourceIds: [
+          ScriptManagedIdentity.outputs.resourceId
+      ]
+    }
+    cleanupPreference: 'OnSuccess'
+    retentionInterval: 'P1D'
+    
+    arguments: '-ResourceGroupName rg-${environmentName} -WebAppName ${webSitesAppServiceName}'
+    scriptContent: '''
+      param(
+        [string] $ResourceGroupName,
+        [string] $WebAppName
+      )
+
+      $zipPath = "https://github.com/petender/azd-fdcdn/raw/refs/heads/main/WebSite/WebSite.zip"
+      
+      Write-Output "ResourceGroupName: $ResourceGroupName"
+      Write-Output "WebAppName: $WebAppName"
+      Write-Output "ZipPath: $zipPath"
+
+      Publish-AzWebApp -ResourceGroupName $ResourceGroupName -Name $WebAppName -ArchivePath $zipPath
+    '''
+  }
+}
+
+  
+
+
+  
+
+  
+  
+
+  output AppServiceName string = webSitesAppService.name
+  output ScriptManagedIdentityResId string = ScriptManagedIdentity.outputs.resourceId

@@ -20,6 +20,8 @@ var tags = {
 
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 
+@description('Id of the user or app to assign application roles')
+param principalId string
 
 resource rg 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: 'rg-${environmentName}'
@@ -35,6 +37,10 @@ module fdcdn './fdcdn.bicep' = {
     location: location
     tags: tags
     environmentName: environmentName
+    principalId: principalId
 
   }
 }
+
+output WEBAPP_SERVICE_NAME string = fdcdn.outputs.AppServiceName
+
