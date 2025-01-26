@@ -18,8 +18,6 @@ var tags = {
   'azd-env-name': environmentName
 }
 
-var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
-
 @description('Id of the user or app to assign application roles')
 param principalId string
 
@@ -43,4 +41,3 @@ module fdcdn './fdcdn.bicep' = {
 }
 
 output WEBAPP_SERVICE_NAME string = fdcdn.outputs.AppServiceName
-
