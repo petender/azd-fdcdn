@@ -1,6 +1,3 @@
-@description('MTT Alias for unique resource names')
-@maxLength(13)
-param namingConvention string = ''
 param tags object
 param environmentName string
 
@@ -12,7 +9,6 @@ var abbrs = loadJsonContent('./abbreviations.json')
 
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
-
 
 @description('Describes plan\'s pricing tier and instance size. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/')
 param sku string = 'S1'
@@ -27,12 +23,7 @@ var cdnProfileName = '${abbrs.cdnProfiles}${resourceToken}'
 var webSitesAppServiceName = '${abbrs.webSitesAppService}${resourceToken}'
 var cdnProfileEndpointName = '${abbrs.cdnProfilesEndpoints}${resourceToken}'
 
-
-
-
-
-
-resource serverfarm 'Microsoft.Web/serverfarms@2022-03-01' = {
+resource serverfarm 'Microsoft.Web/serverfarms@2024-04-01' = {
   name: serverfarmName
   location: location
   tags: tags
@@ -41,17 +32,15 @@ resource serverfarm 'Microsoft.Web/serverfarms@2022-03-01' = {
   }
 }
 
-resource cdnprofile 'Microsoft.Cdn/profiles@2022-11-01-preview' = {
+resource cdnprofile 'Microsoft.Cdn/profiles@2024-09-01' = {
   name: cdnProfileName
   location: 'Global'
   tags: tags
   sku: {
     name: 'Standard_AzureFrontDoor'
   }
-  kind: 'frontdoor'
   properties: {
     originResponseTimeoutSeconds: 60
-    extendedProperties: {}
   }
 }
 
@@ -174,8 +163,6 @@ resource cdnProfileOriginGroup 'Microsoft.Cdn/profiles/origingroups@2022-11-01-p
   }
 }
 
-
-
 resource webSitesconfig 'Microsoft.Web/sites/config@2022-09-01' = {
   parent: webSitesAppService
   name: 'web'
@@ -255,7 +242,6 @@ resource webSitesconfig 'Microsoft.Web/sites/config@2022-09-01' = {
 resource webSitesBinding 'Microsoft.Web/sites/hostNameBindings@2022-09-01' = {
   parent: webSitesAppService
   name: '${webSitesAppServiceName}.azurewebsites.net'
-  location: location
   properties: {
     siteName: '${webSitesAppServiceName}/${webSitesAppServiceName}.azurewebsites.net'
     hostNameType: 'Verified'
@@ -275,9 +261,6 @@ resource cdnProfilesOriginGroupOrigins 'Microsoft.Cdn/profiles/origingroups/orig
     enabledState: 'Enabled'
     enforceCertificateNameCheck: true
   }
-  dependsOn: [
-    cdnprofile
-  ]
 }
 
 resource cdnProfilesRoutes 'Microsoft.Cdn/profiles/afdendpoints/routes@2022-11-01-preview' = {
@@ -379,18 +362,13 @@ module blobUploadIdentity 'br/public:avm/res/managed-identity/user-assigned-iden
       arguments: '-StorageAccountName ${storageAccount.outputs.name}' //multi line strings do not support interpolation in bicep yet
       scriptContent: '''
         param([string] $StorageAccountName)
-  
-  
-        Invoke-WebRequest -Uri "https://github.com/petender/azd-fdcdn/blob/2522659eeb200bfb36d11cdb0f8805a01cc23529/WebSite/images/image-01.jpg" -OutFile image-01.jpg
-        Invoke-WebRequest -Uri "https://github.com/petender/azd-fdcdn/blob/2522659eeb200bfb36d11cdb0f8805a01cc23529/WebSite/images/image-02.jpg" -OutFile image-02.jpg
-        Invoke-WebRequest -Uri "https://github.com/petender/azd-fdcdn/blob/2522659eeb200bfb36d11cdb0f8805a01cc23529/WebSite/images/image-03.jpg" -OutFile image-03.jpg
-        Invoke-WebRequest -Uri "https://github.com/petender/azd-fdcdn/blob/2522659eeb200bfb36d11cdb0f8805a01cc23529/WebSite/images/image-04.jpg" -OutFile image-04.jpg
-        Invoke-WebRequest -Uri "https://github.com/petender/azd-fdcdn/blob/2522659eeb200bfb36d11cdb0f8805a01cc23529/WebSite/images/image-05.jpg" -OutFile image-05.jpg
-        Invoke-WebRequest -Uri "https://github.com/petender/azd-fdcdn/blob/2522659eeb200bfb36d11cdb0f8805a01cc23529/WebSite/images/image-06.jpg" -OutFile image-06.jpg
-
-
-
-
+    
+        Invoke-WebRequest -Uri "https://github.com/petender/azd-fdcdn/blob/2522659eeb200bfb36d11cdb0f8805a01cc23529/WebSite/images/image-01.jpg?raw=true" -OutFile image-01.jpg
+        Invoke-WebRequest -Uri "https://github.com/petender/azd-fdcdn/blob/2522659eeb200bfb36d11cdb0f8805a01cc23529/WebSite/images/image-02.jpg?raw=true" -OutFile image-02.jpg
+        Invoke-WebRequest -Uri "https://github.com/petender/azd-fdcdn/blob/2522659eeb200bfb36d11cdb0f8805a01cc23529/WebSite/images/image-03.jpg?raw=true" -OutFile image-03.jpg
+        Invoke-WebRequest -Uri "https://github.com/petender/azd-fdcdn/blob/2522659eeb200bfb36d11cdb0f8805a01cc23529/WebSite/images/image-04.jpg?raw=true" -OutFile image-04.jpg
+        Invoke-WebRequest -Uri "https://github.com/petender/azd-fdcdn/blob/2522659eeb200bfb36d11cdb0f8805a01cc23529/WebSite/images/image-05.jpg?raw=true" -OutFile image-05.jpg
+        Invoke-WebRequest -Uri "https://github.com/petender/azd-fdcdn/blob/2522659eeb200bfb36d11cdb0f8805a01cc23529/WebSite/images/image-06.jpg?raw=true" -OutFile image-06.jpg
 
         $context = New-AzStorageContext -StorageAccountName $StorageAccountName
   
@@ -404,27 +382,24 @@ module blobUploadIdentity 'br/public:avm/res/managed-identity/user-assigned-iden
     }
   }
 
-
  module ScriptManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
     name: 'ScriptManagedIdentityDeployment'
     params: {
       name: '${abbrs.managedIdentityUserAssignedIdentities}Script-${resourceToken}'
       location: location
-    }
-    
+    }    
   }
 
 // add role assignment to the scriptmanagedidentity as contributor to the resoruce group
-
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(resourceGroup().id, ScriptManagedIdentity.name)
+  scope: resourceGroup()
   properties: {
     principalId: ScriptManagedIdentity.outputs.principalId
-    roleDefinitionId: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
-    scope: resourceGroup().id
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+    principalType: 'ServicePrincipal'
   }
 }
-
 
 module WebSitedeploymentScript 'br/public:avm/res/resources/deployment-script:0.5.0' = if (deployWebSite) {
   name: 'WebSiteScriptDeployment'
@@ -448,24 +423,16 @@ module WebSitedeploymentScript 'br/public:avm/res/resources/deployment-script:0.
         [string] $WebAppName
       )
 
-      $zipPath = "https://github.com/petender/azd-fdcdn/raw/refs/heads/main/WebSite/WebSite.zip"
+      $zipUrl = "https://github.com/petender/azd-fdcdn/raw/refs/heads/main/WebSite/WebSite.zip"
+      Invoke-WebRequest -Uri $zipUrl -OutFile "WebSite.zip"
       
       Write-Output "ResourceGroupName: $ResourceGroupName"
       Write-Output "WebAppName: $WebAppName"
-      Write-Output "ZipPath: $zipPath"
 
-      Publish-AzWebApp -ResourceGroupName $ResourceGroupName -Name $WebAppName -ArchivePath $zipPath
+      Publish-AzWebApp -ResourceGroupName $ResourceGroupName -Name $WebAppName -ArchivePath "WebSite.zip" -Type "zip" -Force
     '''
   }
-}
+}  
 
-  
-
-
-  
-
-  
-  
-
-  output AppServiceName string = webSitesAppService.name
-  output ScriptManagedIdentityResId string = ScriptManagedIdentity.outputs.resourceId
+output AppServiceName string = webSitesAppService.name
+output ScriptManagedIdentityResId string = ScriptManagedIdentity.outputs.resourceId
