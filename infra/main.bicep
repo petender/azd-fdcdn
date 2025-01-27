@@ -41,3 +41,5 @@ module fdcdn './fdcdn.bicep' = {
 }
 
 output WEBAPP_SERVICE_NAME string = fdcdn.outputs.AppServiceName
+output BLOB_BASE_IMAGE_URL string = fdcdn.outputs.BlobImageBaseUrl
+output CDN_BASE_IMAGE_URL string = fdcdn.outputs.CDNImageBaseUrl

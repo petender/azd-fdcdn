@@ -61,7 +61,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.14.3' = {
       containers: [
         {
           name: 'images'
-          publicAccess: 'None'
+          publicAccess: 'Blob'
         }
       ]
     }
@@ -89,7 +89,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.14.3' = {
 resource webSitesAppService 'Microsoft.Web/sites@2022-09-01' = {
   name: webSitesAppServiceName
   location: location
-  tags: tags
+  tags: union(tags, { 'azd-service-name': 'webapp' })
   kind: 'app'
   properties: {
     enabled: true
@@ -401,38 +401,17 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-module WebSitedeploymentScript 'br/public:avm/res/resources/deployment-script:0.5.0' = if (deployWebSite) {
-  name: 'WebSiteScriptDeployment'
-  params: {
-    location: location
-    kind: 'AzurePowerShell'
-    name: 'pwscript-WebSiteScript'
-    azPowerShellVersion: '12.3'
-    managedIdentities: {
-        userAssignedResourceIds: [
-          ScriptManagedIdentity.outputs.resourceId
-      ]
-    }
-    cleanupPreference: 'OnSuccess'
-    retentionInterval: 'P1D'
-    
-    arguments: '-ResourceGroupName rg-${environmentName} -WebAppName ${webSitesAppServiceName}'
-    scriptContent: '''
-      param(
-        [string] $ResourceGroupName,
-        [string] $WebAppName
-      )
 
-      $zipUrl = "https://github.com/petender/azd-fdcdn/raw/refs/heads/main/WebSite/WebSite.zip"
-      Invoke-WebRequest -Uri $zipUrl -OutFile "WebSite.zip"
-      
-      Write-Output "ResourceGroupName: $ResourceGroupName"
-      Write-Output "WebAppName: $WebAppName"
-
-      Publish-AzWebApp -ResourceGroupName $ResourceGroupName -Name $WebAppName -ArchivePath "WebSite.zip" -Type "zip" -Force
-    '''
+resource appSettings 'Microsoft.Web/sites/config@2024-04-01' = {
+  parent: webSitesAppService
+  name: 'appsettings'
+  properties: {
+    BLOB_BASE_IMAGE_URL: 'https://${storageAccount.outputs.name}.blob.core.windows.net/images'
+    CDN_BASE_IMAGE_URL:  'https://${cdnProfileEndpoint.properties.hostName}/images'
   }
-}  
+}
 
 output AppServiceName string = webSitesAppService.name
 output ScriptManagedIdentityResId string = ScriptManagedIdentity.outputs.resourceId
+output BlobImageBaseUrl string = 'https://${storageAccount.outputs.name}.blob.core.windows.net/images'
+output CDNImageBaseUrl string = 'https://${cdnProfileEndpoint.properties.hostName}/images'
