@@ -56,15 +56,6 @@ This scenario deploys **a basic website index.html file**, displaying Seattle sc
 
 1. The 2nd scenario streams images from Azure Storage Account. Open the **%youralias%fdstorageaccount** Azure Storage Account.
 1. Navigate to Storage Browser / Blob Containers / **Images** Container and show the 6 image files present.
-1. Go back to the App Service blade, and open the **App Service Editor**.
-1. Open the file **index.html**
-1. At **line 43**, you see the following code snippet:
-```
-<a href="#" class="button blue" data-entry-url="https://pdtcdntest1.blob.core.windows.net/images/images">Download from Azure Blob Storage</a>
-```
-1. **edit** the url, replacing the pdtcdntest1 part of the URL path, with the actual name of your %youralias%fdstorageaccount.
-1. The reason why it's /images/images, is because the files are stored in a subfolder "images" within the blob container "images"
-1. The file gets **saved automatically**.
 1. Return to the web page itself, refresh the page in the browser, and click the 2nd button **Download from Azure Blob Storage**
 1. Wait for the images to load, and note the loading time. This should be **faster** than the previous scenario.
 1. Navigate back to the Azure Portal, and open the **FrontDoor Resource** blade.
@@ -77,15 +68,6 @@ This scenario deploys **a basic website index.html file**, displaying Seattle sc
 1. Explain this is where you configure the backend service getting published by FrontDoor. In our example, the Web App.
 1. Click **close** and return to the FrontDoor main blade.
 1. Select **Optimizations** from the Settings section. Highlight **Caching** is **Enabled**. 
-1. Go back to the App Service blade, and open the **App Service Editor**.
-1. Open the file **index.html**
-1. At **line 51**, you see the following code snippet:
-```
-<a href="#" class="button blue" data-entry-url="https://newpdtfd-gtdvd9f5cpeth6dy.z01.azurefd.net/images">Download from Azure CDN</a>
-```
-1. **edit** the url, replacing the newpdtfd-... part of the URL path, with the actual name of your %youralias%fdcdnprofile... (the FrontDoor Endpoint hostname).
-1. The /images path here, points to the actual /images folder of the webapp file system.
-1. The file gets **saved automatically**.
 1. Return to the web page itself, refresh the page in the browser, and click the 3rd button **Download from Azure CDN**
 1. Wait for the images to load, which should be the **fastest** of all 3 scenarios.
 1. Open a new browser tab, navigate to the web page again, and simulate all 3 download actions. This time, the **Azure CDN** should have an even shorter loading time as before, **confirming it's presented from cache**.
