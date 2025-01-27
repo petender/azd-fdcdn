@@ -41,7 +41,7 @@ This scenario deploys **a basic website index.html file**, displaying Seattle sc
 * %youralias%fdserverfarm - Azure App Service Plan
 * %youralias%fdstorageaccount - Azure Storage Account, used by Azure Front Door CDN
 
-<img src="../DemoGuides/FDCDN/FDCDN_ResourceGroup_Overview.png" alt="FDCDN Resource Group" style="width:70%;">
+<img src="https://raw.githubusercontent.com/petender/azd-fdcdn/main/Demoguides/FDCDN/FDCDN_ResourceGroup_Overview.png" alt="FDCDN Resource Group" style="width:70%;">
 <br></br>
 
 ### 2. What can I demo from this scenario after deployment
@@ -51,7 +51,7 @@ This scenario deploys **a basic website index.html file**, displaying Seattle sc
 1. Click the **Download from App Service** button.  
 1. This shows 6 images, and the load time in millisecs.
 
-<img src="../DemoGuides/FDCDN/FDCDN_webappimages.png" alt="FDCDN Web App Images" style="width:70%;">
+<img src="https://raw.githubusercontent.com/petender/azd-fdcdn/main/Demoguides/FDCDN/FDCDN_webappimages.png" alt="FDCDN Web App Images" style="width:70%;">
 <br></br>
 
 1. The 2nd scenario streams images from Azure Storage Account. Open the **%youralias%fdstorageaccount** Azure Storage Account.
@@ -61,7 +61,7 @@ This scenario deploys **a basic website index.html file**, displaying Seattle sc
 1. Navigate back to the Azure Portal, and open the **FrontDoor Resource** blade.
 1. From the **Overview** blade, explain the **Properties** such as Endpoint hostname, reflecting the name of the FrontDoor Service, the Origin Groups, pointing at the actual service(s) getting published through FrontDoor, and Routes, pointing at how FrontDoor is handling routing traffic.
 
-<img src="../DemoGuides/FDCDN/FDCDN_frontdoor.png" alt="FDCDN Frontdoor" style="width:70%;">
+<img src="https://raw.githubusercontent.com/petender/azd-fdcdn/main/Demoguides/FDCDN/FDCDN_frontdoor.png" alt="FDCDN Frontdoor" style="width:70%;">
 <br></br>
 
 1.  Select **Origin Groups / default-origin-group** to open its settings. In the Origin Groups blade, select **default-origin-group**.  
