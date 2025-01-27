@@ -1,0 +1,57 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+ <div class="main wrapper clearfix">
+                <article>
+                    <header>
+                        <h1>Loading Images from different Azure Services</h1>
+                        <p>This basic demo website allows you to get an idea how the performance of loading images is dependent on the actual Azure Service used. The 3 scenarios are Azure App Services, Azure Storage Account and Azure FrontDoor/CDN. While the first time you load the images, the difference won't be that big, it starts becoming a difference for the Azure CDN option after refreshing the website (Ctrl-F5). It should go from about 1000-3000 ms down to < 100 ms on average. Try to include a few learners, maybe even from different locations in the world, to connect to the website and experiment with the load times.</p>
+                    </header>
+                    <section>
+                        
+                        <a href="#" class="button orange" data-entry-url="/images">Download From App Service</a>
+                        <div class="results">Load time: N/A ms</div>
+                        <ul class="images clearfix">
+                        </ul>
+                        
+                    </section>
+                    <section>
+
+                        <a href="#" class="button blue" data-entry-url="@Model.Config.BlobBaseImageUrl">Download from Azure Blob Storage</a>
+                        <div class="results">Load time: N/A ms</div>
+                        <ul class="images clearfix">
+                        </ul>
+                        
+                    </section>
+                    <section>
+
+                        <a href="#" class="button turquoise" data-entry-url="@Model.Config.CdnBaseImageUrl">Download from Azure CDN</a>
+                        <div class="results">Load time: N/A ms</div>
+                        <ul class="images clearfix">
+                        </ul>
+                        
+                    </section>
+                </article>
+
+                <!-- create A section that will be displayed if the configuration is not present -->
+                
+                @if(!Model.Config.IsConfigured)
+                {
+                <article>
+                    <section class="error">
+                        <h2>Configuration Error</h2>
+                        <p>There was an error loading the configuration. Please check the configuration and try again.</p>
+                        <p>Required configuration variables:</p>
+                        <ul>
+                            <li><strong>BLOB_BASE_IMAGE_URL</strong>: URL for the base image location in Azure Blob Storage.</li>
+                            <li><strong>CDN_BASE_IMAGE_URL</strong>: URL for the base image location in Azure CDN.</li>
+                        </ul>
+                    </section>
+                </article>
+                }
+                
+
+            </div> <!-- #main -->
