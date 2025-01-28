@@ -15,15 +15,15 @@ This repo contains a demo for an Azure App Service WebApp, Storage Account and A
 
 1. Create a new folder on your machine.
 ```
-mkdir <your repo link> e.g. petender/azd-apimwithconfapi
+mkdir petender/azd-fdcdn
 ```
 2. Next, navigate to the new folder.
 ```
-cd <your repo link> e.g. petender/azd-apimwithconfapi
+cd petender/azd-fdcdn
 ```
 3. Next, run `azd init` to initialize the deployment.
 ```
-azd init -t <your repo link> e.g. petender/azd-apimwithconfapi
+azd init -t petender/azd-fdcdn
 ```
 4. Last, run `azd up` to trigger an actual deployment.
 ```
@@ -34,7 +34,7 @@ azd up
 
 ## What is the demo scenario about?
 
-- Use the [demo guide](insert raw link to the demoguide within your repo) for inspiration for your demo
+- Use the [demo guide]([insert raw link to the demoguide within your repo](https://github.com/petender/azd-fdcdn/blob/main/Demoguides/fdcdn.md)) for inspiration for your demo
 
 ## 💭 Feedback and Contributing
 Feel free to create issues for bugs, suggestions or Fork and create a PR with new demo scenarios or optimizations to the templates. 
