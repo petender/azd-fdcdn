@@ -15,7 +15,7 @@ This repo contains a demo for an Azure App Service WebApp, Storage Account and A
 
 1. Create a new folder on your machine.
 ```
-mkdir petender/azd-fdcdn
+mkdir -p petender/azd-fdcdn
 ```
 2. Next, navigate to the new folder.
 ```
