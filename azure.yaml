@@ -8,6 +8,6 @@ infra:
 
 services:
   webapp:
-    project: ./Website
+    project: ./WebSite
     host: appservice
     language: dotnet
